@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: report-system-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SuaSenhaForte@123 # IMPORTANTE: Use a mesma senha do seu appsettings.json
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+
+  # Serviço da nossa API
+  api:
+    container_name: report-system-api
+    build:
+      context: .
+      dockerfile: ReportSystem.API/Dockerfile
+    ports:
+      - "8080:80"
+      - "8081:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    depends_on:
+      - db
+
+# Define o volume nomeado para persistir os dados do banco
+volumes:
+  sql-data:
