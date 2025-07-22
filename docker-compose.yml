@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Serviço do Banco de Dados
+  # Serviï¿½o do Banco de Dados
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: report-system-db
@@ -13,7 +13,7 @@ services:
     volumes:
       - sql-data:/var/opt/mssql
 
-  # Serviço da nossa API
+  # Serviï¿½o da nossa API
   api:
     container_name: report-system-api
     build:
@@ -21,10 +21,9 @@ services:
       dockerfile: ReportSystem.API/Dockerfile
     ports:
       - "8080:80"
-      - "8081:443"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
     depends_on:
       - db
 
