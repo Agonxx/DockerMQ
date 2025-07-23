@@ -20,14 +20,16 @@ using ReportSystem.Infrastructure.Persistence.Repositories; // Para nossa implem
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Adicionar serviços ao contêiner. ---
-
-// 1. CONFIGURAR O ENTITY FRAMEWORK CORE (AppDbContext)
-// Esta seção prepara a conexão com o banco de dados.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    // Aqui dizemos ao EF Core para usar o provedor do SQL Server e fornecemos a
-    // connection string que ele lerá do nosso arquivo appsettings.json.
-    options.UseSqlServer(connectionString));
+if (builder.Environment.EnvironmentName != "IntegrationTest")
+{
+    // 1. CONFIGURAR O ENTITY FRAMEWORK CORE (AppDbContext)
+    // Esta seção prepara a conexão com o banco de dados.
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        // Aqui dizemos ao EF Core para usar o provedor do SQL Server e fornecemos a
+        // connection string que ele lerá do nosso arquivo appsettings.json.
+        options.UseSqlServer(connectionString));
+}
 
 // 2. REGISTRAR NOSSOS PRÓPRIOS SERVIÇOS (REPOSITÓRIO)
 // A ordem aqui geralmente não importa, desde que esteja antes de `builder.Build()`.
@@ -106,3 +108,5 @@ app.MapControllers();
 // Inicia a aplicação e a faz começar a escutar por requisições HTTP.
 // Este é um comando de bloqueio; o código para de executar aqui até que a aplicação seja encerrada.
 app.Run();
+
+public partial class Program { }
